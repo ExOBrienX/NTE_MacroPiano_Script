@@ -1,0 +1,4 @@
+mido
+pynput
+pydirectinput
+pyautogui
