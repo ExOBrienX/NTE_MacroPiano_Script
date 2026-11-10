@@ -4,7 +4,7 @@
 NTE Piano Macro - MIDI to Keyboard Converter
 ===========================================
 
-Converts MIDI files to keyboard macros for the piano in "Never to Evernees" (NTE).
+Converts MIDI files to keyboard macros for the piano in "Neverness to Everness" (NTE).
 
 Features:
 - Full polyphony support with chords

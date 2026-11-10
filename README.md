@@ -1,160 +1,86 @@
-# NTE Piano Macro - MIDI to Keyboard Converter
+# NTE Piano Macro
 
-🎵 **Convert MIDI files to keyboard macros for the piano in "Never to Evernees" (NTE)**
+Plays MIDI files on the in-game pianos of **Neverness to Everness** (NTE) by turning each note into the keyboard input the game expects.
 
-[![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+Pick a `.mid` file, sit at a piano in the game, and the script performs the song for you, chords included.
 
-## 🌟 Features
+## Features
 
-- ✅ **Full Polyphony**: Support for chords and simultaneous notes
-- ✅ **Automatic Detection**: Key signature and octave ranges
-- ✅ **Real-time Controls**: F5/F6/F7/F8 for speed and playback control
-- ✅ **Multi-language Interface**: Spanish and English support
-- ✅ **File Selector**: Easy MIDI file selection via command line
-- ✅ **Smart Chord Handling**: Groups notes by modifiers (Ctrl/Shift) for accurate playback
+- **Full polyphony.** Chords and simultaneous notes are grouped by modifier key (Ctrl / Shift) so they are pressed together without conflicts.
+- **Automatic key detection.** Finds the song's key with the Krumhansl-Schmuckler algorithm and transposes it to fit the game's keyboard.
+- **Automatic octave range.** Shifts the song into the octaves the in-game piano can play.
+- **Live controls.** Change speed, pause, resume or stop while the song is playing.
+- **Spanish and English interface**, chosen at startup.
 
-## 🎼 Note Mapping
+## Requirements
 
-| MIDI Note | Note | Key | Modifier | Description |
-|-----------|------|-----|----------|-------------|
-| 0 | C (Do) | A/S/Q | None | Natural note |
-| 2 | D (Re) | S/W | None | Natural note |
-| 3 | Eb (Mib) | D/E | Ctrl | Flat |
-| 4 | E (Mi) | D/E | None | Natural note |
-| 5 | F (Fa) | F/R | None | Natural note |
-| 6 | F# (Fa#) | F/R | Shift | Sharp |
-| 7 | G (Sol) | G/T | None | Natural note |
-| 8 | G# (Sol#) | G/T | Shift | Sharp |
-| 9 | A (La) | H/Y | None | Natural note |
-| 10 | Bb (Sib) | J/U | Ctrl | Flat |
-| 11 | B (Si) | J/U | None | Natural note |
+- Windows 10 or 11
+- Python 3.7 or newer
 
-## 🚀 Installation
+## Quick start
 
-### Requirements
-- Python 3.7 or higher
-- Windows 10/11 (for keyboard input simulation)
+On Windows, double-click `Start.bat`. It installs the dependencies and launches the script.
 
-### Install Dependencies
-```bash
-pip install mido pynput pydirectinput
-```
+Or from a terminal:
 
-Or install from requirements.txt:
 ```bash
 pip install -r requirements.txt
 ```
 
-### Verify Installation
-```bash
-python -c "import mido, pydirectinput, pynput; print('✅ All dependencies installed')"
-```
-
-## 🎮 Usage
-
-### Basic Usage
 ```bash
 python NTEscript.py
 ```
 
-The script will:
-1. Ask you to select your language (Spanish/English)
-2. Show available MIDI files in the current directory
-3. Let you select a file to play
-4. Start playback with a 5-second countdown
+Then:
 
-### Controls
-- **F5**: Normal speed (1x)
-- **F6**: Slow speed (0.4x) - debug mode
-- **F7**: Pause / Resume
-- **F8**: Stop playback
+1. Choose your language.
+2. Choose a MIDI file from the list. Any `.mid` file placed next to the script shows up; `Orange.mid` is included as an example.
+3. Switch to the game and sit at a piano. Playback starts after a 5-second countdown.
 
-### File Requirements
-- Place your `.mid` files in the same directory as the script
-- The script automatically detects key signatures and adjusts octaves
-- Supports complex MIDI files with multiple tracks
+## Controls
 
-## 📁 Project Structure
+| Key | Action |
+|---|---|
+| F5 | Normal speed (1x) |
+| F6 | Slow speed (0.4x), useful to check individual notes |
+| F7 | Pause / resume |
+| F8 | Stop |
 
-```
-NTE Piano Macro/
-├── NTEscript.py          # Main script with GUI
-├── requirements.txt      # Python dependencies
-├── README.md            # This file (English)
-├── Orange.mid           # Example MIDI file
-└── LICENSE              # MIT License
-```
+## Note mapping
 
-## 🔧 Troubleshooting
+| Semitone | Note | Key | Modifier |
+|---|---|---|---|
+| 0 | C (Do) | A / S / Q | none |
+| 2 | D (Re) | S / W | none |
+| 3 | Eb (Mib) | D / E | Ctrl |
+| 4 | E (Mi) | D / E | none |
+| 5 | F (Fa) | F / R | none |
+| 6 | F# (Fa#) | F / R | Shift |
+| 7 | G (Sol) | G / T | none |
+| 8 | G# (Sol#) | G / T | Shift |
+| 9 | A (La) | H / Y | none |
+| 10 | Bb (Sib) | J / U | Ctrl |
+| 11 | B (Si) | J / U | none |
 
-### Common Issues
+## How it works
 
-**"No .mid files found"**
-- Place MIDI files in the same directory as the script
-- Ensure files have `.mid` extension
+1. The MIDI file is read with [mido](https://mido.readthedocs.io/) and its notes are collected across all tracks.
+2. The key is estimated and the song is transposed and shifted to the playable octaves.
+3. Notes that start together are grouped into chords, split by the modifier they need.
+4. Key presses are sent with [pydirectinput](https://github.com/learncodebygaming/pydirectinput), which the game registers reliably, while [pynput](https://pynput.readthedocs.io/) listens for the control keys.
 
-**"Import errors"**
-```bash
-pip install --upgrade mido pynput pydirectinput
-```
+## Troubleshooting
 
-**"Keys not working in game"**
-- Make sure you're focused on the game window
-- Some games have anti-macro protection
-- Try running as administrator
+**No `.mid` files found.** Put the MIDI files in the same folder as the script.
 
-**"Notes sound wrong"**
-- The script automatically detects key signatures
-- Check the transposition output in the console
-- Complex MIDI files might need manual adjustment
+**Keys do nothing in the game.** Make sure the game window is focused. If it still fails, run the terminal as administrator.
 
-### Debug Mode
-Use F6 to switch to slow mode (0.4x speed) to see individual note presses.
+**The song sounds wrong.** Check the transposition printed in the console. Very dense or unusual MIDI files may need to be simplified first.
 
-## 🌐 Multi-language Support
+## Disclaimer
 
-The script supports both Spanish and English:
-- Interface prompts
-- Status messages
-- Error messages
-- Control instructions
+This is a fan-made tool and is not affiliated with the game or its developers. It sends automated keyboard input, which a game's terms of service may not allow. Use it at your own risk.
 
-Language is selected at startup.
+## License
 
-## 📊 Technical Details
-
-- **Input Method**: pydirectinput for reliable keyboard simulation
-- **Polyphony**: Groups notes by modifier to prevent conflicts
-- **Timing**: Smart sleep with speed control
-- **Key Detection**: Krumhansl-Schmuckler algorithm for key finding
-- **Octave Mapping**: Automatic octave range detection and adjustment
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## ⚠️ Disclaimer
-
-- Use at your own risk
-- Some games may detect automated input as cheating
-- Test in single-player or with permission
-- The author is not responsible for any consequences
-
-## 🙏 Acknowledgments
-
-- Built with [mido](https://mido.readthedocs.io/) for MIDI processing
-- Uses [pynput](https://pynput.readthedocs.io/) for keyboard listening
-- [pydirectinput](https://github.com/learncodebygaming/pydirectinput) for input simulation
-
----
-
-**Enjoy playing your favorite songs in NTE! 🎹**
+MIT. See [LICENSE](LICENSE).
